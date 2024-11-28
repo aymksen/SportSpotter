@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const iconUrl = sportIconMapping[sport] || 'default-icon.png';
         return L.icon({
             iconUrl: iconUrl,
-            iconSize: [30, 30],
+            iconSize: [22, 22],
             iconAnchor: [15, 15], // Adjusted icon anchor
             popupAnchor: [0, -15]
         });
