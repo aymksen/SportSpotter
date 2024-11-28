@@ -7,6 +7,112 @@ document.addEventListener('DOMContentLoaded', function() {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    const LocationControl = L.Control.extend({
+        options: { position: 'bottomright' },
+
+        onAdd: function(map) {
+            const container = L.DomUtil.create('div', ' leaflet-control location-control');
+            const button = L.DomUtil.create('a', 'leaflet-control-location', container);
+            button.href = '#';
+            button.title = 'Show my location';
+
+            const icon = L.DomUtil.create('img', 'location-icon', button);
+            icon.src = 'icons/location-icon.png';
+            icon.alt = 'Track Location';
+
+            button.addEventListener('click', () => {
+                requestLocationTracking(true);
+            });
+
+            return container;
+        }
+    });
+
+    map.addControl(new LocationControl());
+
+    let userLocationMarker = null;
+
+    function requestLocationTracking(centerMap = false) {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+
+                    if (userLocationMarker) {
+                        map.removeLayer(userLocationMarker);
+                    }
+
+                    const userIcon = L.divIcon({
+                        className: 'user-location-icon',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
+                    userLocationMarker = L.marker([latitude, longitude], { 
+                        icon: userIcon,
+                        zIndexOffset: 1000
+                    }).addTo(map);
+
+                    if (centerMap) {
+                        map.setView([latitude, longitude], 15);
+                    }
+                },
+                (error) => {
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("Location access denied. Please enable location permissions.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("Location information is unavailable.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("Location request timed out.");
+                            break;
+                        default:
+                            alert("An unknown error occurred with location tracking.");
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 30000,
+                    timeout: 27000
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    // Continuous location tracking without zooming
+    if ("geolocation" in navigator) {
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+
+                if (userLocationMarker) {
+                    map.removeLayer(userLocationMarker);
+                }
+
+                const userIcon = L.divIcon({
+                    className: 'user-location-icon',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                });
+
+                userLocationMarker = L.marker([latitude, longitude], { 
+                    icon: userIcon,
+                    zIndexOffset: 1000
+                }).addTo(map);
+            },
+            null,
+            {
+                enableHighAccuracy: true,
+                maximumAge: 30000,
+                timeout: 27000
+            }
+        );
+    }
+
     const markerLayerGroup = L.layerGroup().addTo(map);
 
     const sportIconMapping = {
@@ -28,8 +134,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return L.icon({
             iconUrl: iconUrl,
             iconSize: [22, 22],
-            iconAnchor: [15, 15], // Adjusted icon anchor
-            popupAnchor: [0, -15]
+            iconAnchor: [11, 11], // Updated icon anchor
+            popupAnchor: [0, -11]
         });
     }
 
@@ -65,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ${properties.lit ? `<p>Lit: Yes</p>` : ''}
             ${properties.ref ? `<p>Ref: ${properties.ref}</p>` : ''}
             ${properties['addr:street'] ? `<p>Address: ${properties['addr:street']}, ${properties['addr:housenumber']}, ${properties['addr:postcode']} ${properties['addr:city']}</p>` : ''}
-            <button class="navigate-btn" data-lat="${coords[0]}" data-lon="${coords[1]}">Navigate</button>
+            <button class="navigate-btn" data-lat="${coords[0]}" data-lon="${coords[1]}">Navigate ➤</button>
         `;
     }
 
@@ -74,8 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('data.geojson')
         .then(response => response.json())
         .then(data => {
-            console.log('GeoJSON data loaded:', data);
-
             data.features.forEach(feature => {
                 const sport = feature.properties.sport;
                 if (!markers[sport]) markers[sport] = [];
@@ -110,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
     sportIcons.forEach(icon => {
         icon.addEventListener('click', function() {
             const sport = this.getAttribute('data-sport');
-            console.log('Selected sport:', sport);
 
             markerLayerGroup.clearLayers();
 
@@ -123,11 +226,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (bounds.isValid()) {
                     map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
                 } else {
-                    map.setView([51.960665, 7.626135], 13); // Center on Münster
+                    map.setView([51.960665, 7.626135], 13); // Center on Münster, Germany
                 }
             } else {
                 console.log(`No locations found for sport: ${sport}`);
-                map.setView([51.960665, 7.626135], 13); // Center on Münster
+                map.setView([51.960665, 7.626135], 13); // Center on Münster, Germany
             }
         });
     });
@@ -137,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sportIcons.forEach(icon => {
             const sportName = icon.getAttribute('data-sport');
             if (sportName.toLowerCase().includes(searchTerm)) {
-                icon.style.display = 'flex';
+                icon.style.display = 'block';
             } else {
                 icon.style.display = 'none';
             }
