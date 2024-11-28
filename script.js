@@ -3,139 +3,138 @@ document.addEventListener('DOMContentLoaded', function() {
     const sportIcons = document.querySelectorAll('.sport-icon');
     const map = L.map('map').setView([51.960665, 7.626135], 13); // Center on Münster, Germany
 
-    // Initialize the map
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    const markers = {};
+    const markerLayerGroup = L.layerGroup().addTo(map);
 
-    // Utility function to convert coordinates
-    function convertCoordinates(coords) {
-        // If it's a point (2D array), swap the coordinates
-        if (coords.length === 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
-            return [coords[1], coords[0]];
-        }
-        
-        // If it's a polygon or multipolygon, recursively convert
-        return coords.map(coord => {
-            if (Array.isArray(coord[0])) {
-                return convertCoordinates(coord);
-            }
-            return [coord[1], coord[0]];
+    const sportIconMapping = {
+        soccer: 'football-icon.png',
+        tennis: 'tennis-icon.png',
+        boules: 'boules.png',
+        speckbrett: 'speckbrett.png',
+        skateboard: 'skateboard.png',
+        basketball: 'basketball.png',
+        beachvolleyball: 'beachvolleyball.png',
+        team_handball: 'team_handball.png',
+        equestrian: 'equestrian.png',
+        paintball: 'paintball.png',
+        table_tennis:'table_tennis.png'
+    };
+
+    function createIcon(sport) {
+        const iconUrl = sportIconMapping[sport] || 'default-icon.png';
+        return L.icon({
+            iconUrl: iconUrl,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15], // Adjusted icon anchor
+            popupAnchor: [0, -15]
         });
     }
 
-    // Load GeoJSON data
+    function getCentroid(coords) {
+        let sumLat = 0;
+        let sumLon = 0;
+        for (let i = 0; i < coords.length; i++) {
+            sumLat += coords[i][1];
+            sumLon += coords[i][0];
+        }
+        return [sumLat / coords.length, sumLon / coords.length];
+    }
+
+    function getMarkerCoordinates(feature) {
+        if (feature.geometry.type === 'Point') {
+            return [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+        } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+            const exteriorRing = feature.geometry.coordinates[0];
+            const centroid = getCentroid(exteriorRing);
+            return centroid; // Return the centroid without swapping
+        } else {
+            console.warn('Unsupported geometry type:', feature.geometry.type);
+            return [0, 0];
+        }
+    }
+
+    function getPopupContent(feature) {
+        const properties = feature.properties;
+        return `
+            <h3>${properties.sport}</h3>
+            <p>Surface: ${properties.surface || 'N/A'}</p>
+            ${properties.lit ? `<p>Lit: Yes</p>` : ''}
+            ${properties.ref ? `<p>Ref: ${properties.ref}</p>` : ''}
+            ${properties['addr:street'] ? `<p>Address: ${properties['addr:street']}, ${properties['addr:housenumber']}, ${properties['addr:postcode']} ${properties['addr:city']}</p>` : ''}
+        `;
+    }
+
+    const markers = {}; // Object to hold markers for each sport
+
     fetch('data.geojson')
         .then(response => response.json())
         .then(data => {
-            L.geoJSON(data, {
-                pointToLayer: (feature, latlng) => {
-                    // Convert coordinates for points
-                    const convertedCoords = convertCoordinates(feature.geometry.coordinates);
-                    
-                    const sport = feature.properties.sport;
-                    
-                    const popupContent = `
-                        <h3>${feature.properties.sport}</h3>
-                        <p>Surface: ${feature.properties.surface || 'N/A'}</p>
-                        ${feature.properties.lit ? `<p>Lit: Yes</p>` : ''}
-                        ${feature.properties.ref ? `<p>Ref: ${feature.properties.ref}</p>` : ''}
-                        ${feature.properties['addr:street'] ? `<p>Address: ${feature.properties['addr:street']}, ${feature.properties['addr:housenumber']}, ${feature.properties['addr:postcode']} ${feature.properties['addr:city']}</p>` : ''}
-                    `;
+            console.log('GeoJSON data loaded:', data);
 
-                    const marker = L.marker(convertedCoords).addTo(map);
-                    marker.bindPopup(popupContent, {
-                        className: 'custom-popup'
-                    });
+            data.features.forEach(feature => {
+                const sport = feature.properties.sport;
+                if (!markers[sport]) markers[sport] = [];
 
-                    if (!markers[sport]) markers[sport] = [];
-                    markers[sport].push(marker);
+                if (feature.geometry.type === 'Point') {
+                    const coords = getMarkerCoordinates(feature);
+                    const icon = createIcon(sport);
+                    const marker = L.marker(coords, { icon: icon, sport: sport });
+                    const popupContent = getPopupContent(feature);
+                    marker.bindPopup(popupContent, { className: 'custom-popup' });
+                    markers[sport].push(marker); // Add to sport-specific array
+                } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+                    const centroid = getCentroid(feature.geometry.coordinates[0]);
+                    const icon = createIcon(sport);
+                    const marker = L.marker(centroid, { icon: icon, sport: sport }); // Use centroid without swapping
+                    const popupContent = getPopupContent(feature);
+                    marker.bindPopup(popupContent, { className: 'custom-popup' });
+                    markers[sport].push(marker); // Add to sport-specific array
 
-                    return marker;
-                },
-                onEachFeature: (feature, layer) => {
-                    const sport = feature.properties.sport;
-                    const popupContent = `
-                        <h3>${feature.properties.sport}</h3>
-                        <p>Surface: ${feature.properties.surface || 'N/A'}</p>
-                        ${feature.properties.lit ? `<p>Lit: Yes</p>` : ''}
-                        ${feature.properties.ref ? `<p>Ref: ${feature.properties.ref}</p>` : ''}
-                        ${feature.properties['addr:street'] ? `<p>Address: ${feature.properties['addr:street']}, ${feature.properties['addr:housenumber']}, ${feature.properties['addr:postcode']} ${feature.properties['addr:city']}</p>` : ''}
-                    `;
-
-                    if (feature.geometry.type === 'Polygon') {
-                        // Convert polygon coordinates
-                        const convertedPolygon = convertCoordinates(feature.geometry.coordinates);
-                        const polygon = L.polygon(convertedPolygon).addTo(map);
-                        polygon.bindPopup(popupContent, {
-                            className: 'custom-popup'
-                        });
-
-                        if (!markers[sport]) markers[sport] = [];
-                        markers[sport].push(polygon);
-                    }
+                    const polygon = L.polygon(feature.geometry.coordinates[0].map(coord => [coord[1], coord[0]]), { color: 'blue', fillOpacity: 0.2 }); // Swap lat and lon for polygon
+                    polygon.bindPopup(popupContent, { className: 'custom-popup' });
+                    markers[sport].push(polygon);
                 }
-            }).addTo(map);
+            });
         })
         .catch(error => {
             console.error('Error loading GeoJSON:', error);
             console.error('Detailed error:', error.message);
         });
 
-    // Show markers for the selected sport
+    // Show markers for the selected sport and zoom to their bounds
     sportIcons.forEach(icon => {
         icon.addEventListener('click', function() {
             const sport = this.getAttribute('data-sport');
-            
-            // Remove all existing layers except the base tile layer
-            map.eachLayer(layer => {
-                if (layer instanceof L.Marker || layer instanceof L.Polygon) {
-                    map.removeLayer(layer);
-                }
-            });
+            console.log('Selected sport:', sport);
 
-            // Re-add markers for the selected sport
-            if (markers[sport]) {
-                markers[sport].forEach(marker => map.addLayer(marker));
-                
+            markerLayerGroup.clearLayers();
+
+            if (markers[sport] && markers[sport].length > 0) {
+                markers[sport].forEach(marker => {
+                    markerLayerGroup.addLayer(marker);
+                });
+
                 const bounds = L.featureGroup(markers[sport]).getBounds();
                 if (bounds.isValid()) {
-                    map.fitBounds(bounds, {
-                        maxZoom: 15, // Set a maximum zoom level to avoid zooming out too much
-                        padding: [50, 50] // Add some padding around the bounds
-                    });
+                    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
                 } else {
-                    map.setView([51.960665, 7.626135], 13); // Center on Münster if no valid bounds
+                    map.setView([51.960665, 7.626135], 13); // Center on Münster
                 }
             } else {
-                map.setView([51.960665, 7.626135], 13); // Center on Münster if no markers for the sport
+                console.log(`No locations found for sport: ${sport}`);
+                map.setView([51.960665, 7.626135], 13); // Center on Münster
             }
         });
     });
 
-    // Expand marker on click and center map
-    map.on('click', function(e) {
-        const clickedLayer = e.layer;
-        if (clickedLayer && (clickedLayer instanceof L.Marker || clickedLayer instanceof L.Polygon)) {
-            clickedLayer.openPopup();
-            if (clickedLayer instanceof L.Marker) {
-                map.setView(clickedLayer.getLatLng(), 15);
-            } else if (clickedLayer instanceof L.Polygon) {
-                map.fitBounds(clickedLayer.getBounds(), {
-                    padding: [50, 50] // Add some padding around the bounds
-                });
-            }
-        }
-    });
-
-    // Basic search functionality
     searchBar.addEventListener('input', function() {
         const searchTerm = searchBar.value.toLowerCase();
         sportIcons.forEach(icon => {
             const sportName = icon.getAttribute('data-sport');
-            if (sportName.includes(searchTerm)) {
+            if (sportName.toLowerCase().includes(searchTerm)) {
                 icon.style.display = 'flex';
             } else {
                 icon.style.display = 'none';
