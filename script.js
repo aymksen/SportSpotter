@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         team_handball: 'icons/team_handball.png',
         equestrian: 'icons/equestrian.png',
         paintball: 'icons/paintball.png',
-        table_tennis:'icons/table_tennis.png'
+        table_tennis: 'icons/table_tennis.png'
     };
 
     function createIcon(sport) {
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
             const exteriorRing = feature.geometry.coordinates[0];
             const centroid = getCentroid(exteriorRing);
-            return centroid; // Return the centroid without swapping
+            return centroid;
         } else {
             console.warn('Unsupported geometry type:', feature.geometry.type);
             return [0, 0];
@@ -58,12 +58,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getPopupContent(feature) {
         const properties = feature.properties;
+        const coords = getMarkerCoordinates(feature);
         return `
             <h3>${properties.sport}</h3>
             <p>Surface: ${properties.surface || 'N/A'}</p>
             ${properties.lit ? `<p>Lit: Yes</p>` : ''}
             ${properties.ref ? `<p>Ref: ${properties.ref}</p>` : ''}
             ${properties['addr:street'] ? `<p>Address: ${properties['addr:street']}, ${properties['addr:housenumber']}, ${properties['addr:postcode']} ${properties['addr:city']}</p>` : ''}
+            <button class="navigate-btn" data-lat="${coords[0]}" data-lon="${coords[1]}">Navigate</button>
         `;
     }
 
@@ -142,8 +144,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Function to handle navigation
+    function navigateToLocation(lat, lon) {
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
+        window.open(url, '_blank');
+    }
 
-const apiKey = '654312122f7fc94a9bceab9d0ff344b2'; // Replace with your API key
+    // Event listener for "Navigate" button clicks
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('navigate-btn')) {
+            const lat = event.target.getAttribute('data-lat');
+            const lon = event.target.getAttribute('data-lon');
+            navigateToLocation(lat, lon);
+        }
+    });
+
+    const apiKey = '654312122f7fc94a9bceab9d0ff344b2'; // Replace with your API key
     const city = 'Münster';
     const country = 'DE';
     const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}`;
@@ -175,6 +191,4 @@ const apiKey = '654312122f7fc94a9bceab9d0ff344b2'; // Replace with your API key
 
     // Fetch weather data when the page loads
     getWeather();
-
-    // ... (rest of the code)
 });
