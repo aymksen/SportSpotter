@@ -141,4 +141,40 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+
+const apiKey = '654312122f7fc94a9bceab9d0ff344b2'; // Replace with your API key
+    const city = 'Münster';
+    const country = 'DE';
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}`;
+
+    // Function to fetch and display weather
+    function getWeather() {
+        fetch(weatherUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.cod === 200) {
+                    // Convert temperature from Kelvin to Celsius
+                    const temperature = Math.round(data.main.temp - 273.15);
+                    // Get weather icon
+                    const iconCode = data.weather[0].icon;
+                    const iconUrl = `https://openweathermap.org/img/w/${iconCode}.png`;
+                    // Update the weather widget
+                    const weatherIcon = document.querySelector('.weather-widget img');
+                    const weatherTemp = document.querySelector('.weather-widget span');
+                    weatherIcon.src = iconUrl;
+                    weatherTemp.textContent = `${temperature}°C`;
+                } else {
+                    console.error('Weather data not found:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching weather data:', error);
+            });
+    }
+
+    // Fetch weather data when the page loads
+    getWeather();
+
+    // ... (rest of the code)
 });
