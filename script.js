@@ -10,17 +10,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const markerLayerGroup = L.layerGroup().addTo(map);
 
     const sportIconMapping = {
-        soccer: 'football-icon.png',
-        tennis: 'tennis-icon.png',
-        boules: 'boules.png',
-        speckbrett: 'speckbrett.png',
-        skateboard: 'skateboard.png',
-        basketball: 'basketball.png',
-        beachvolleyball: 'beachvolleyball.png',
-        team_handball: 'team_handball.png',
-        equestrian: 'equestrian.png',
-        paintball: 'paintball.png',
-        table_tennis:'table_tennis.png'
+        soccer: 'icons/football-icon.png',
+        tennis: 'icons/tennis-icon.png',
+        boules: 'icons/boules.png',
+        speckbrett: 'icons/speckbrett.png',
+        skateboard: 'icons/skateboard.png',
+        basketball: 'icons/basketball.png',
+        beachvolleyball: 'icons/beachvolleyball.png',
+        team_handball: 'icons/team_handball.png',
+        equestrian: 'icons/equestrian.png',
+        paintball: 'icons/paintball.png',
+        table_tennis:'icons/table_tennis.png'
     };
 
     function createIcon(sport) {
