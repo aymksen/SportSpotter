@@ -9,10 +9,13 @@
 </head>
 <body>
     <header>
+        
         <div class="logo">SportSpotter</div>
+        
         <div class="search-bar">
             <input type="text" placeholder="Search for sports venues...">
         </div>
+        
         <div class="weather-widget">
             <img src="icons/weather-icon.png" alt="Weather Icon">
             <span>10°C</span>
@@ -52,16 +55,22 @@
                 <div class="sport-icon" data-sport="equestrian">
                     <img src="icons/equestrian.png" alt="equestrian">
                 </div>
+                <div class="sport-icon" data-sport="archery">
+                    <img src="icons/archery.png" alt="archery">
+                </div>
                 <div class="sport-icon" data-sport="paintball">
                     <img src="icons/paintball.png" alt="paintball">
                 </div>
             </div>
+            
         </div>
-    
+        
         <div id="map"></div>
+        <button id="theme-toggle" class="theme-button default-image"></button>
     </div>
-
-    <footer>
+    
+    <!-- <footer>
+        
         <nav>
             <a href="#">Home</a>
             <a href="#">About</a>
@@ -72,7 +81,7 @@
             <a href="https://x.com/home"><img src="icons/twitter-icon.png"></a>
             <a href="https://www.instagram.com/"><img src="icons/instagram-icon.png"></a>
         </div>
-    </footer>
+    </footer> -->
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="script.js"></script>

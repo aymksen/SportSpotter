@@ -3,6 +3,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const sportIcons = document.querySelectorAll('.sport-icon');
     const map = L.map('map').setView([51.960665, 7.626135], 13); // Center on Münster, Germany
 
+
+
+
+
+
+
+
+  // Define image URLs
+const lightImage = 'satellite-preview.png';
+const darkImage = 'default-preview.png';
+
+const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+const darkLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '&copy; CartoDB'
+});
+
+// Function to set the map theme
+function setMapTheme(theme) {
+    if (theme === 'light') {
+        map.removeLayer(darkLayer);
+        lightLayer.addTo(map);
+    } else if (theme === 'dark') {
+        map.removeLayer(lightLayer);
+        darkLayer.addTo(map);
+    }
+}
+
+// Initialize the theme
+let currentTheme = 'light';
+setMapTheme('light');
+document.getElementById('theme-toggle').style.backgroundImage = 'url(' + lightImage + ')';
+
+// Event listener for theme toggle
+document.getElementById('theme-toggle').addEventListener('click', function() {
+    if (currentTheme === 'light') {
+        currentTheme = 'dark';
+        this.style.backgroundImage = 'url(' + darkImage + ')';
+        setMapTheme('dark');
+    } else {
+        currentTheme = 'light';
+        this.style.backgroundImage = 'url(' + lightImage + ')';
+        setMapTheme('light');
+    }
+});
+
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
@@ -126,7 +175,8 @@ document.addEventListener('DOMContentLoaded', function() {
         team_handball: 'icons/team_handball.png',
         equestrian: 'icons/equestrian.png',
         paintball: 'icons/paintball.png',
-        table_tennis: 'icons/table_tennis.png'
+        table_tennis: 'icons/table_tennis.png',
+        archery: 'icons/archery.png'
     };
 
     function createIcon(sport) {
