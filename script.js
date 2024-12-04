@@ -10,6 +10,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+    let isMapLocked = false;
+
+
+document.getElementById('zoom-lock').addEventListener('change', function() {
+    isMapLocked = this.checked;
+    
+});
+
+
+document.getElementById('zoom-lock').addEventListener('change', function() {
+    if (this.checked) {
+        document.getElementById('map').classList.add('map-locked');
+        // Disable interactions as before
+    } else {
+        document.getElementById('map').classList.remove('map-locked');
+        // Enable interactions as before
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Define image URLs
 const lightImage = 'satellite-preview.png';
 const darkImage = 'default-preview.png';
@@ -264,17 +300,20 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
     sportIcons.forEach(icon => {
         icon.addEventListener('click', function() {
             const sport = this.getAttribute('data-sport');
-
+    
             markerLayerGroup.clearLayers();
-
+    
             if (markers[sport] && markers[sport].length > 0) {
                 markers[sport].forEach(marker => {
                     markerLayerGroup.addLayer(marker);
                 });
-
+    
                 const bounds = L.featureGroup(markers[sport]).getBounds();
                 if (bounds.isValid()) {
-                    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+                    if (!isMapLocked) {
+                        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+                    }
+                    // If isMapLocked is true, do not fit bounds; map remains in current view
                 } else {
                     map.setView([51.960665, 7.626135], 13); // Center on Münster, Germany
                 }
