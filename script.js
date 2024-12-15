@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const searchBar = document.querySelector('.search-bar input');
     const sportIcons = document.querySelectorAll('.sport-icon');
     const map = L.map('map').setView([51.960665, 7.626135], 13); // Center on Münster, Germany
@@ -13,79 +13,80 @@ document.addEventListener('DOMContentLoaded', function() {
     let isMapLocked = false;
 
 
-document.getElementById('zoom-lock').addEventListener('change', function() {
-    isMapLocked = this.checked;
-    
-});
+    document.getElementById('zoom-lock').addEventListener('change', function () {
+        isMapLocked = this.checked;
+
+    });
 
 
-document.getElementById('zoom-lock').addEventListener('change', function() {
-    if (this.checked) {
-        document.getElementById('map').classList.add('map-locked');
-        // Disable interactions as before
-    } else {
-        document.getElementById('map').classList.remove('map-locked');
-        // Enable interactions as before
+    document.getElementById('zoom-lock').addEventListener('change', function () {
+        if (this.checked) {
+            document.getElementById('map').classList.add('map-locked');
+            // Disable interactions as before
+        } else {
+            document.getElementById('map').classList.remove('map-locked');
+            // Enable interactions as before
+        }
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Define image URLs
+    const lightImage = 'satellite-preview.png';
+    const darkImage = 'default-preview.png';
+
+    const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const darkLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; CartoDB'
+    });
+
+    // Function to set the map theme
+    function setMapTheme(theme) {
+        if (theme === 'light') {
+            map.removeLayer(darkLayer);
+            lightLayer.addTo(map);
+        } else if (theme === 'dark') {
+            map.removeLayer(lightLayer);
+            darkLayer.addTo(map);
+        }
     }
-});
 
+    // Initialize the theme
+    let currentTheme = 'light';
+    setMapTheme('light');
+    document.getElementById('theme-toggle').style.backgroundImage = 'url(' + lightImage + ')';
 
+    // Event listener for theme toggle
+    document.getElementById('theme-toggle').addEventListener('click', function () {
+        if (currentTheme === 'light') {
+            currentTheme = 'dark';
+            this.style.backgroundImage = 'url(' + darkImage + ')';
+            setMapTheme('dark');
+        } else {
+            currentTheme = 'light';
+            this.style.backgroundImage = 'url(' + lightImage + ')';
+            setMapTheme('light');
+        }
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Define image URLs
-const lightImage = 'satellite-preview.png';
-const darkImage = 'default-preview.png';
-
-const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-const darkLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '&copy; CartoDB'
-});
-
-// Function to set the map theme
-function setMapTheme(theme) {
-    if (theme === 'light') {
-        map.removeLayer(darkLayer);
-        lightLayer.addTo(map);
-    } else if (theme === 'dark') {
-        map.removeLayer(lightLayer);
-        darkLayer.addTo(map);
-    }
-}
-
-// Initialize the theme
-let currentTheme = 'light';
-setMapTheme('light');
-document.getElementById('theme-toggle').style.backgroundImage = 'url(' + lightImage + ')';
-
-// Event listener for theme toggle
-document.getElementById('theme-toggle').addEventListener('click', function() {
-    if (currentTheme === 'light') {
-        currentTheme = 'dark';
-        this.style.backgroundImage = 'url(' + darkImage + ')';
-        setMapTheme('dark');
-    } else {
-        currentTheme = 'light';
-        this.style.backgroundImage = 'url(' + lightImage + ')';
-        setMapTheme('light');
-    }
-});
 
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -95,7 +96,7 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
     const LocationControl = L.Control.extend({
         options: { position: 'bottomright' },
 
-        onAdd: function(map) {
+        onAdd: function (map) {
             const container = L.DomUtil.create('div', ' leaflet-control location-control');
             const button = L.DomUtil.create('a', 'leaflet-control-location', container);
             button.href = '#';
@@ -133,7 +134,7 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
                         iconAnchor: [10, 10]
                     });
 
-                    userLocationMarker = L.marker([latitude, longitude], { 
+                    userLocationMarker = L.marker([latitude, longitude], {
                         icon: userIcon,
                         zIndexOffset: 1000
                     }).addTo(map);
@@ -143,7 +144,7 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
                     }
                 },
                 (error) => {
-                    switch(error.code) {
+                    switch (error.code) {
                         case error.PERMISSION_DENIED:
                             alert("Location access denied. Please enable location permissions.");
                             break;
@@ -184,7 +185,7 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
                     iconAnchor: [10, 10]
                 });
 
-                userLocationMarker = L.marker([latitude, longitude], { 
+                userLocationMarker = L.marker([latitude, longitude], {
                     icon: userIcon,
                     zIndexOffset: 1000
                 }).addTo(map);
@@ -298,16 +299,16 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
 
     // Show markers for the selected sport and zoom to their bounds
     sportIcons.forEach(icon => {
-        icon.addEventListener('click', function() {
+        icon.addEventListener('click', function () {
             const sport = this.getAttribute('data-sport');
-    
+
             markerLayerGroup.clearLayers();
-    
+
             if (markers[sport] && markers[sport].length > 0) {
                 markers[sport].forEach(marker => {
                     markerLayerGroup.addLayer(marker);
                 });
-    
+
                 const bounds = L.featureGroup(markers[sport]).getBounds();
                 if (bounds.isValid()) {
                     if (!isMapLocked) {
@@ -324,7 +325,7 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
         });
     });
 
-    searchBar.addEventListener('input', function() {
+    searchBar.addEventListener('input', function () {
         const searchTerm = searchBar.value.toLowerCase();
         sportIcons.forEach(icon => {
             const sportName = icon.getAttribute('data-sport');
@@ -343,7 +344,7 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
     }
 
     // Event listener for "Navigate" button clicks
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         if (event.target.classList.contains('navigate-btn')) {
             const lat = event.target.getAttribute('data-lat');
             const lon = event.target.getAttribute('data-lon');
@@ -383,4 +384,35 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
 
     // Fetch weather data when the page loads
     getWeather();
+
 });
+/////////////////////Login Details///////////////////////////////////
+function openPopup() {
+    document.getElementById('popup').style.display = 'flex';
+}
+
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
+
+function showForm(formType) {
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('signup-form').style.display = 'none';
+
+    if (formType === 'login') {
+        document.getElementById('login-form').style.display = 'block';
+    } else if (formType === 'signup') {
+        document.getElementById('signup-form').style.display = 'block';
+    }
+}
+
+function login() {
+    alert('Logging in with username: ' + document.getElementById('login-username').value);
+    closePopup();
+}
+
+function signup() {
+    alert('Signing up with username: ' + document.getElementById('signup-username').value);
+    closePopup();
+}
+///////////////////////////////////////////////////////////////////////
