@@ -415,4 +415,5 @@ function signup() {
     alert('Signing up with username: ' + document.getElementById('signup-username').value);
     closePopup();
 }
+
 ///////////////////////////////////////////////////////////////////////
