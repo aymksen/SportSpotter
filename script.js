@@ -3,90 +3,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const sportIcons = document.querySelectorAll('.sport-icon');
     const map = L.map('map').setView([51.960665, 7.626135], 13); // Center on Münster, Germany
 
+    // Define image URLs
+    const lightImage = 'satellite-preview.png';
+    const darkImage = 'default-preview.png';
 
+    const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
+    const darkLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; CartoDB'
+    });
 
-
-
-
-
-    let isMapLocked = false;
-
-
-document.getElementById('zoom-lock').addEventListener('change', function() {
-    isMapLocked = this.checked;
-    
-});
-
-
-document.getElementById('zoom-lock').addEventListener('change', function() {
-    if (this.checked) {
-        document.getElementById('map').classList.add('map-locked');
-        // Disable interactions as before
-    } else {
-        document.getElementById('map').classList.remove('map-locked');
-        // Enable interactions as before
+    // Function to set the map theme
+    function setMapTheme(theme) {
+        if (theme === 'light') {
+            map.removeLayer(darkLayer);
+            lightLayer.addTo(map);
+        } else if (theme === 'dark') {
+            map.removeLayer(lightLayer);
+            darkLayer.addTo(map);
+        }
     }
-});
 
+    // Initialize the theme
+    let currentTheme = 'light';
+    setMapTheme('light');
+    document.getElementById('theme-toggle').style.backgroundImage = 'url(' + lightImage + ')';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Define image URLs
-const lightImage = 'satellite-preview.png';
-const darkImage = 'default-preview.png';
-
-const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-const darkLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '&copy; CartoDB'
-});
-
-// Function to set the map theme
-function setMapTheme(theme) {
-    if (theme === 'light') {
-        map.removeLayer(darkLayer);
-        lightLayer.addTo(map);
-    } else if (theme === 'dark') {
-        map.removeLayer(lightLayer);
-        darkLayer.addTo(map);
-    }
-}
-
-// Initialize the theme
-let currentTheme = 'light';
-setMapTheme('light');
-document.getElementById('theme-toggle').style.backgroundImage = 'url(' + lightImage + ')';
-
-// Event listener for theme toggle
-document.getElementById('theme-toggle').addEventListener('click', function() {
-    if (currentTheme === 'light') {
-        currentTheme = 'dark';
-        this.style.backgroundImage = 'url(' + darkImage + ')';
-        setMapTheme('dark');
-    } else {
-        currentTheme = 'light';
-        this.style.backgroundImage = 'url(' + lightImage + ')';
-        setMapTheme('light');
-    }
-});
-
+    // Event listener for theme toggle
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+        if (currentTheme === 'light') {
+            currentTheme = 'dark';
+            this.style.backgroundImage = 'url(' + darkImage + ')';
+            setMapTheme('dark');
+        } else {
+            currentTheme = 'light';
+            this.style.backgroundImage = 'url(' + lightImage + ')';
+            setMapTheme('light');
+        }
+    });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -96,7 +52,7 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
         options: { position: 'bottomright' },
 
         onAdd: function(map) {
-            const container = L.DomUtil.create('div', ' leaflet-control location-control');
+            const container = L.DomUtil.create('div', 'leaflet-control location-control');
             const button = L.DomUtil.create('a', 'leaflet-control-location', container);
             button.href = '#';
             button.title = 'Show my location';
@@ -300,20 +256,17 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
     sportIcons.forEach(icon => {
         icon.addEventListener('click', function() {
             const sport = this.getAttribute('data-sport');
-    
+
             markerLayerGroup.clearLayers();
-    
+
             if (markers[sport] && markers[sport].length > 0) {
                 markers[sport].forEach(marker => {
                     markerLayerGroup.addLayer(marker);
                 });
-    
+
                 const bounds = L.featureGroup(markers[sport]).getBounds();
                 if (bounds.isValid()) {
-                    if (!isMapLocked) {
-                        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
-                    }
-                    // If isMapLocked is true, do not fit bounds; map remains in current view
+                    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
                 } else {
                     map.setView([51.960665, 7.626135], 13); // Center on Münster, Germany
                 }
@@ -384,3 +337,44 @@ document.getElementById('theme-toggle').addEventListener('click', function() {
     // Fetch weather data when the page loads
     getWeather();
 });
+
+document.getElementById('showFormBtn').addEventListener('click', showLoginForm);
+document.getElementById('registerLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  showRegisterForm();
+});
+document.getElementById('loginLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  showLoginForm();
+});
+
+document.addEventListener('click', function(event) {
+  var formContainer = document.getElementById('formContainer');
+  var registerFormContainer = document.getElementById('registerFormContainer');
+  var showFormBtn = document.getElementById('showFormBtn');
+  var registerLink = document.getElementById('registerLink');
+  var loginLink = document.getElementById('loginLink');
+
+  if (
+    !formContainer.contains(event.target) &&
+    !registerFormContainer.contains(event.target) &&
+    !showFormBtn.contains(event.target) &&
+    !registerLink.contains(event.target) &&
+    !loginLink.contains(event.target)
+  ) {
+    formContainer.style.display = 'none';
+    registerFormContainer.style.display = 'none';
+  }
+});
+
+function showLoginForm() {
+    document.getElementById('formContainer').style.display = 'flex';
+    document.getElementById('registerFormContainer').style.display = 'none';
+    document.getElementById('formContainer').querySelector('input').focus();
+  }
+  
+  function showRegisterForm() {
+    document.getElementById('registerFormContainer').style.display = 'flex';
+    document.getElementById('formContainer').style.display = 'none';
+    document.getElementById('registerFormContainer').querySelector('input').focus();
+  }
