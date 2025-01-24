@@ -9,7 +9,10 @@ body {
     
 }
 
+:root {
+  --main: #00150bd0;
 
+}
 
 header {
     position: absolute;
@@ -21,13 +24,12 @@ header {
     align-items: center;
     padding: 0 20px 0 20px;
     color: rgb(255, 255, 255);
-    background-color: #042700b1;
-    
-			-webkit-backdrop-filter: blur(10px);
+    background-color: var(--main);
+			-webkit-backdrop-filter: blur(5px);
 			-moz-backdrop-filter: blur(10px);
 			-ms-backdrop-filter: blur(10px);
-			backdrop-filter: blur(10px);
-			box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.7);
+			backdrop-filter: blur(7px);
+			box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.4);
 
 }
 
@@ -37,10 +39,10 @@ header {
     left: 0px;
     z-index: 999;
     height: 100%;
-    width: 50px;
+    width: 60px;
     padding: 5px;
     overflow: hidden;
-    background-color: rgba(0, 40, 3, 0.676);
+    background-color: var(--main);
 			border: 1px solid rgba(0, 0, 0, 0.155);
 			-webkit-backdrop-filter: blur(10px);
 			-moz-backdrop-filter: blur(10px);
@@ -95,6 +97,12 @@ header {
     display: flex;
     align-items: center;
     margin-right: 50px;
+    background-color: rgba(0, 0, 4, 0.358);
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 30px;
 }
 
 .weather-widget img {
@@ -177,7 +185,7 @@ footer nav a {
 .leaflet-popup-content-wrapper, .leaflet-popup-tip  {
    
    color:rgb(255, 255, 255);
-   background-color: #042700a4;
+   background-color: var(--main);
 			-webkit-backdrop-filter: blur(5px);
 			-moz-backdrop-filter: blur(10px);
 			-ms-backdrop-filter: blur(10px);
@@ -284,130 +292,200 @@ footer nav a {
     filter: drop-shadow(3px 2px 3px #2300006d);
 }
 
+  /* Login buttons  */
+  .button-3 {
 
-/* lockbutton */
-  .btn-lock {
-    position: absolute;
-    bottom: 20px;
-    left: calc(50% - 32px);
-    display: inline-block;
-    background: #ff5b5b;
-    width: 64px;
-    height: 64px;
-    box-sizing: border-box;
-    padding: 12px 0 0 18px;
-    border-radius: 50%;
+    background-color: #020703;
+    border: 1px solid rgba(255, 255, 255, 0.363);
+    border-radius: 30px;
+    color: #fff;
     cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    z-index: 9999;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 6px 16px;
+    position: relative;
+    letter-spacing: 0.8px;
   }
-  .btn-lock svg {
-    fill: none;
-    transform: translate3d(0, 0, 0);
-  }
-  .btn-lock svg .bling {
-    stroke: #fff;
-    stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-dasharray: 3;
-    stroke-dashoffset: 15;
-    transition: all 0.3s ease;
-  }
-  .btn-lock svg .lock {
-    stroke: #fff;
-    stroke-width: 4;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    stroke-dasharray: 36;
-    transition: all 0.4s ease;
-  }
-  .btn-lock svg .lockb {
-    fill: #fff;
-    fill-rule: evenodd;
-    clip-rule: evenodd;
-    transform: rotate(8deg);
-    transform-origin: 14px 20px;
-    transition: all 0.2s ease;
-  }
-  #zoom-lock {
-    display: none;
-  }
-  #zoom-lock:checked + label {
-    background: #20cca5;
-  }
-  #zoom-lock:checked + label svg {
-    opacity: 1;
-  }
-  #zoom-lock:checked + label svg .bling {
-    animation: bling 0.3s linear forwards;
-    animation-delay: 0.2s;
-  }
-  #zoom-lock:checked + label svg .lock {
-    stroke-dasharray: 48;
-    animation: locked 0.3s linear forwards;
-  }
-  #zoom-lock:checked + label svg .lockb {
-    transform: rotate(0);
-    transform-origin: 14px 22px;
-  }
-  @-moz-keyframes bling {
-    50% {
-      stroke-dasharray: 3;
-      stroke-dashoffset: 12;
-    }
-    100% {
-      stroke-dasharray: 3;
-      stroke-dashoffset: 9;
-    }
-  }
-  @-webkit-keyframes bling {
-    50% {
-      stroke-dasharray: 3;
-      stroke-dashoffset: 12;
-    }
-    100% {
-      stroke-dasharray: 3;
-      stroke-dashoffset: 9;
-    }
-  }
-  @-o-keyframes bling {
-    50% {
-      stroke-dasharray: 3;
-      stroke-dashoffset: 12;
-    }
-    100% {
-      stroke-dasharray: 3;
-      stroke-dashoffset: 9;
-    }
-  }
-  @keyframes bling {
-    50% {
-      stroke-dasharray: 3;
-      stroke-dashoffset: 12;
-    }
-    100% {
-      stroke-dasharray: 3;
-      stroke-dashoffset: 9;
-    }
-  }
-  @-moz-keyframes locked {
-    50% {
-      transform: translateY(1px);
-    }
-  }
-  @-webkit-keyframes locked {
-    50% {
-      transform: translateY(1px);
-    }
-  }
-  @-o-keyframes locked {
-    50% {
-      transform: translateY(1px);
-    }
-  }
-  @keyframes locked {
-    50% {
-      transform: translateY(1px);
-    }
+  .button-3:hover {
+    background-color: #00000040;
   }
   
+ /* event slidebar */
+
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Enhanced Toggle Button */
+.menu-toggle {
+    user-select: none;
+    z-index: 1001;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    
+    padding: 6px 16px;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-toggle:hover {
+    box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+}
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.hamburger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+.menu-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    letter-spacing: 0.8px;
+}
+
+/* Glassmorphism Sidebar */
+.events-sidebar {
+    width: 350px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    position: fixed;
+    top: 0;
+    right: -350px;
+    z-index: 1000;
+    box-shadow: -4px 0 30px rgba(0,0,0,0.1);
+    padding: 50px 25px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+}
+
+/* Active States */
+.menu-toggle.active {
+    right: 370px;
+}
+
+.menu-toggle.active .hamburger span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+    background: #e74c3c;
+}
+
+.menu-toggle.active .hamburger span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active .hamburger span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+    background: #e74c3c;
+}
+
+.events-sidebar.active {
+    right: 0;
+}
+
+/* Event Cards Styling */
+.events-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.events-header h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.events-header p {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+}
+
+.event-card {
+    background: rgba(255,255,255,0.6);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transform: translateX(30px);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.events-sidebar.active .event-card {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.event-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.event-date {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-date::before {
+    content: '📅';
+    filter: hue-rotate(-20deg);
+}
+
+.event-title {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.event-location {
+    color: #7f8c8d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.event-location::before {
+    content: '📍';
+}
+
+.event-sport {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.soccer { background: #27ae60; color: white; }
+.basketball { background: #e67e22; color: white; }
+.running { background: #3498db; color: white; }
+.tennis { background: #9b59b6; color: white; }
