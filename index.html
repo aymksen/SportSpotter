@@ -32,8 +32,8 @@
         <input type="text" placeholder="Search for sports venues..." />
       </div>
       <div>
-        <button class="button-3" role="button">LogIn</button>
-        <button class="button-3" role="button">SignIn</button>
+        <button onclick="showAuthPopup('login')" class="button-3" >LogIn</button>
+        <button onclick="showAuthPopup('signup')" class="button-3">SignIn</button>
       </div>
 
       <!-- Enhanced Toggle Button -->
@@ -85,6 +85,52 @@
         </button>
       </div>
     </header>
+
+ <!-- Auth Popup -->
+ <div class="blur-overlay" id="authOverlay">
+  <div class="auth-popup">
+      <button class="close-btn" onclick="hideAuthPopup()">×</button>
+      <div class="auth-tabs">
+          <button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Login</button>
+          <button class="auth-tab" id="signupTab" onclick="switchAuth('signup')">Sign Up</button>
+      </div>
+      
+      <!-- Login Form -->
+      <form class="auth-form" id="loginForm">
+          <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" required>
+          </div>
+          <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" required>
+          </div>
+          <button type="submit" class="auth-submit">Login</button>
+      </form>
+
+      <!-- Signup Form -->
+      <form class="auth-form" id="signupForm" style="display: none;">
+          <div class="form-group">
+              <label for="signupEmail">Email</label>
+              <input type="email" id="signupEmail" required>
+          </div>
+          <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" required>
+          </div>
+          <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <input type="password" id="signupPassword" required>
+          </div>
+          <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <input type="password" id="confirmPassword" required>
+          </div>
+          <button type="submit" class="auth-submit">Create Account</button>
+      </form>
+  </div>
+</div>
+
 
     <div class="container">
       <div class="sidebar">
@@ -148,6 +194,7 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="script.js"></script>
+    <script src="auth.js"></script>
     <script>
       function toggleSidebar() {
         const sidebar = document.querySelector(".events-sidebar");
