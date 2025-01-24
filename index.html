@@ -1,135 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SportSpotter</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css">
-</head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EYX0C183ND"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-EYX0C183ND"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-  gtag('config', 'G-EYX0C183ND');
-</script>
-<body>
-    
+    gtag("config", "G-EYX0C183ND");
+  </script>
+  <body>
     <header>
-        
-        <div class="logo">SportSpotter</div>
-        <div class="weather-widget">
-            <img src="icons/weather-icon.png" alt="Weather Icon">
-            <span>10°C</span>
-        </div>
-        <div class="search-bar">
-            
-            <input type="text" placeholder="Search for sports venues...">
-        </div> 
-    <div>
+      <div class="logo">SportSpotter</div>
+      <div class="weather-widget">
+        <img src="icons/weather-icon.png" alt="Weather Icon" />
+        <span>10°C</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search for sports venues..." />
+      </div>
+      <div>
         <button class="button-3" role="button">LogIn</button>
         <button class="button-3" role="button">SignIn</button>
-    </div>
-        
-       <!-- Enhanced Toggle Button -->
-    <div class="menu-toggle" onclick="toggleSidebar()">
+      </div>
+
+      <!-- Enhanced Toggle Button -->
+      <div class="menu-toggle" onclick="toggleSidebar()">
         <div class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
         <span class="menu-label">Events</span>
-    </div>
+      </div>
 
-    <!-- Glassmorphism Sidebar -->
-    <div class="events-sidebar">
+      <!-- Glassmorphism Sidebar -->
+      <div class="events-sidebar">
         <div class="events-header">
-            <h2>Local Sports Events</h2>
-            <p>Upcoming activities in your area</p>
+          <h2>Local Sports Events</h2>
+          <p>Upcoming activities in your area</p>
         </div>
 
         <div class="event-card">
-            <div class="event-date">Saturday, March 16 • 3:00 PM</div>
-            <h3 class="event-title">Community Soccer Finals</h3>
-            <div class="event-location">Central Park Stadium</div>
-            <span class="event-sport soccer">Soccer</span>
+          <div class="event-date">Saturday, March 16 • 3:00 PM</div>
+          <h3 class="event-title">Community Soccer Finals</h3>
+          <div class="event-location">Central Park Stadium</div>
+          <span class="event-sport soccer">Soccer</span>
         </div>
 
         <div class="event-card">
-            <div class="event-date">Sunday, March 17 • 10:00 AM</div>
-            <h3 class="event-title">Beach Volleyball Open</h3>
-            <div class="event-location">Southside Beach Courts</div>
-            <span class="event-sport basketball">Volleyball</span>
+          <div class="event-date">Sunday, March 17 • 10:00 AM</div>
+          <h3 class="event-title">Beach Volleyball Open</h3>
+          <div class="event-location">Southside Beach Courts</div>
+          <span class="event-sport basketball">Volleyball</span>
         </div>
 
         <div class="event-card">
-            <div class="event-date">Monday, March 18 • 6:30 PM</div>
-            <h3 class="event-title">Night Run Challenge</h3>
-            <div class="event-location">Riverside Trail Track</div>
-            <span class="event-sport running">Running</span>
+          <div class="event-date">Monday, March 18 • 6:30 PM</div>
+          <h3 class="event-title">Night Run Challenge</h3>
+          <div class="event-location">Riverside Trail Track</div>
+          <span class="event-sport running">Running</span>
         </div>
 
         <div class="event-card">
-            <div class="event-date">Wednesday, March 20 • 5:00 PM</div>
-            <h3 class="event-title">Youth Tennis Clinic</h3>
-            <div class="event-location">City Tennis Complex</div>
-            <span class="event-sport tennis">Tennis</span>
+          <div class="event-date">Wednesday, March 20 • 5:00 PM</div>
+          <h3 class="event-title">Youth Tennis Clinic</h3>
+          <div class="event-location">City Tennis Complex</div>
+          <span class="event-sport tennis">Tennis</span>
         </div>
-    </div>
+        <button class="add-event-btn" onclick="showAddEventForm()">
+          Add Event
+        </button>
+      </div>
     </header>
-    
+
     <div class="container">
-        
-        <div class="sidebar">
-            
-            <div class="sport-icons">
-                <div class="sport-icon" data-sport="soccer">
-                    <img src="icons/football-icon.png" alt="Football Icon">
-                </div>
-                <div class="sport-icon" data-sport="tennis">
-                    <img src="icons/tennis-icon.png" alt="Tennis Icon">
-                </div>
-                <div class="sport-icon" data-sport="table_tennis">
-                    <img src="icons/table_tennis.png" alt="table_tennis Icon">
-                </div>
-                <div class="sport-icon" data-sport="boules">
-                    <img src="icons/boules.png" alt="boules Icon">
-                </div>
-                <div class="sport-icon" data-sport="speckbrett">
-                    <img src="icons/speckbrett.png" alt="speckbrett Icon">
-                </div>
-                <div class="sport-icon" data-sport="skateboard">
-                    <img src="icons/skateboard.png" alt="skateboard Icon">
-                </div>
-                <div class="sport-icon" data-sport="basketball">
-                    <img src="icons/basketball.png" alt="basketball Icon">
-                </div>
-                <div class="sport-icon" data-sport="beachvolleyball">
-                    <img src="icons/beachvolleyball.png" alt="beachvolleyball Icon">
-                </div>
-                <div class="sport-icon" data-sport="team_handball">
-                    <img src="icons/team_handball.png" alt="team_handball">
-                </div>
-                <div class="sport-icon" data-sport="equestrian">
-                    <img src="icons/equestrian.png" alt="equestrian">
-                </div>
-                <div class="sport-icon" data-sport="archery">
-                    <img src="icons/archery.png" alt="archery">
-                </div>
-                <div class="sport-icon" data-sport="paintball">
-                    <img src="icons/paintball.png" alt="paintball">
-                </div>
-            </div>
-            
+      <div class="sidebar">
+        <div class="sport-icons">
+          <div class="sport-icon" data-sport="soccer">
+            <img src="icons/football-icon.png" alt="Football Icon" />
+          </div>
+          <div class="sport-icon" data-sport="tennis">
+            <img src="icons/tennis-icon.png" alt="Tennis Icon" />
+          </div>
+          <div class="sport-icon" data-sport="table_tennis">
+            <img src="icons/table_tennis.png" alt="table_tennis Icon" />
+          </div>
+          <div class="sport-icon" data-sport="boules">
+            <img src="icons/boules.png" alt="boules Icon" />
+          </div>
+          <div class="sport-icon" data-sport="speckbrett">
+            <img src="icons/speckbrett.png" alt="speckbrett Icon" />
+          </div>
+          <div class="sport-icon" data-sport="skateboard">
+            <img src="icons/skateboard.png" alt="skateboard Icon" />
+          </div>
+          <div class="sport-icon" data-sport="basketball">
+            <img src="icons/basketball.png" alt="basketball Icon" />
+          </div>
+          <div class="sport-icon" data-sport="beachvolleyball">
+            <img src="icons/beachvolleyball.png" alt="beachvolleyball Icon" />
+          </div>
+          <div class="sport-icon" data-sport="team_handball">
+            <img src="icons/team_handball.png" alt="team_handball" />
+          </div>
+          <div class="sport-icon" data-sport="equestrian">
+            <img src="icons/equestrian.png" alt="equestrian" />
+          </div>
+          <div class="sport-icon" data-sport="archery">
+            <img src="icons/archery.png" alt="archery" />
+          </div>
+          <div class="sport-icon" data-sport="paintball">
+            <img src="icons/paintball.png" alt="paintball" />
+          </div>
         </div>
-        
-        <div id="map"></div>
-        <button id="theme-toggle" class="theme-button default-image"></button>
+      </div>
+
+      <div id="map"></div>
+      <button id="theme-toggle" class="theme-button default-image"></button>
     </div>
-    
+
     <!-- <footer>
         
         <nav>
@@ -147,12 +149,12 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="script.js"></script>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.events-sidebar');
-            const toggle = document.querySelector('.menu-toggle');
-            sidebar.classList.toggle('active');
-            toggle.classList.toggle('active');
-        }
+      function toggleSidebar() {
+        const sidebar = document.querySelector(".events-sidebar");
+        const toggle = document.querySelector(".menu-toggle");
+        sidebar.classList.toggle("active");
+        toggle.classList.toggle("active");
+      }
     </script>
-</body>
+  </body>
 </html>
