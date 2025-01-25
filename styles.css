@@ -370,7 +370,7 @@ body {
   padding-bottom: 20px;
 }
 
-/* Active States */
+/* Active States */ 
 .menu-toggle.active {
   right: 370px;
 }
