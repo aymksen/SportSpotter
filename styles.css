@@ -474,23 +474,8 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.soccer {
-  background: #27ae60;
-  color: white;
-}
-.basketball {
-  background: #e67e22;
-  color: white;
-}
-.running {
-  background: #3498db;
-  color: white;
-}
-.tennis {
-  background: #9b59b6;
-  color: white;
+  background: #006e02;
+  color: rgb(255, 255, 255);
 }
 
 /* add event button */

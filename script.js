@@ -1,3 +1,6 @@
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const searchBar = document.querySelector('.search-bar input');
     const sportIcons = document.querySelectorAll('.sport-icon');
