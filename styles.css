@@ -649,3 +649,19 @@ body {
             font-size: 1.2rem;
             color: #666;
         }
+
+        select {
+          padding: 0.8rem;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          font-size: 1rem;
+          background: white;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+      }
+      
+      select:focus {
+          outline: none;
+          border-color: var(--loginclr);
+      }

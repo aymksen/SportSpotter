@@ -1,52 +1,38 @@
-function showAuthPopup(mode) {
-    document.getElementById('authOverlay').style.display = 'flex';
-    switchAuth(mode);
-}
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-function hideAuthPopup() {
-    document.getElementById('authOverlay').style.display = 'none';
-}
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAdq5vopBcCndx9ce4arvM-o3cnwi2IGRg",
+  authDomain: "sportspotter-e5d74.firebaseapp.com",
+  projectId: "sportspotter-e5d74",
+  storageBucket: "sportspotter-e5d74.firebasestorage.app",
+  messagingSenderId: "9163968897",
+  appId: "1:9163968897:web:3a5a644eb4153f11395880",
+  measurementId: "G-V7EG7QPTNE"
+};
 
-function switchAuth(mode) {
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    const loginTab = document.getElementById('loginTab');
-    const signupTab = document.getElementById('signupTab');
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-    if (mode === 'login') {
-        loginForm.style.display = 'flex';
-        signupForm.style.display = 'none';
-        loginTab.classList.add('active');
-        signupTab.classList.remove('active');
-    } else {
-        loginForm.style.display = 'none';
-        signupForm.style.display = 'flex';
-        loginTab.classList.remove('active');
-        signupTab.classList.add('active');
-    }
-}
+
+
+
+
+const email = document.getElementById('email').value;
+const password = document.getElementById('password').value;
+
+const submit = document.getElementById('submit');
 
 // Handle form submissions
 document.getElementById('loginForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    console.log('Login with:', email);
+    console.log('Login with:', email , password);
     hideAuthPopup();
-});
-
-document.getElementById('signupForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('signupEmail').value;
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('signupPassword').value;
-    console.log('Signup with:', { email, username, password });
-    hideAuthPopup();
-});
-
-// Close popup when clicking outside
-document.getElementById('authOverlay').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('authOverlay')) {
-        hideAuthPopup();
-    }
 });

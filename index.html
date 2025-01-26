@@ -6,6 +6,7 @@
     <title>SportSpotter</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png"/>
   </head>
   <!-- Google tag (gtag.js) -->
   <script
@@ -122,11 +123,44 @@
               <label for="signupPassword">Password</label>
               <input type="password" id="signupPassword" required>
           </div>
-          <div class="form-group">
+          <div class="form-group">authOverlay
               <label for="confirmPassword">Confirm Password</label>
               <input type="password" id="confirmPassword" required>
           </div>
           <button type="submit" class="auth-submit">Create Account</button>
+      </form>
+  </div>
+</div>
+
+
+<!-- Add Event Popup -->
+<div class="blur-overlay" id="addEventOverlay">
+  <div class="auth-popup">
+      <button class="close-btn" onclick="hideAddEventForm()">×</button>
+      <h2 style="margin-bottom: 1.5rem;">Add New Event</h2>
+      
+      <form class="auth-form" id="addEventForm">
+          <div class="form-group">
+              <label for="eventDate">Date</label>
+              <input type="date" id="eventDate" required>
+          </div>
+          <div class="form-group">
+              <label for="eventTime">Time</label>
+              <input type="time" id="eventTime" required>
+          </div>
+          <div class="form-group">
+              <label for="eventActivities">Activitie</label>
+              <input type="text" id="eventActivities" required>
+          </div>
+          <div class="form-group">
+              <label for="eventLocation">Location</label>
+              <input type="text" id="eventLocation" required>
+          </div>
+          <div class="form-group">
+              <label for="eventTag">Tag</label>
+              <input type="text" id="eventTag" required>
+          </div>
+          <button type="submit" class="auth-submit">Add Event</button>
       </form>
   </div>
 </div>
@@ -194,6 +228,7 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="script.js"></script>
+    <script src="popup.js"></script>
     <script src="auth.js"></script>
     <script>
       function toggleSidebar() {
