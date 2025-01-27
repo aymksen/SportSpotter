@@ -32,9 +32,13 @@
       <div class="search-bar">
         <input type="text" placeholder="Search for sports venues..." />
       </div>
-      <div>
-        <!-- <button onclick="showAuthPopup('login')" class="button-3" >LogIn</button>
-        <button onclick="showAuthPopup('signup')" class="button-3">SignIn</button> -->
+      <div class="auth-buttons">
+        <button onclick="showAuthPopup('login')" class="button-3">LogIn</button>
+        <button onclick="showAuthPopup('signup')" class="button-3">SignUp</button>
+      </div>
+      <div class="user-greeting" style="display: none;">
+        <span></span>
+        <button onclick="logout()" class="button-3">Logout</button>
       </div>
 
       <!-- Enhanced Toggle Button -->
@@ -100,7 +104,7 @@
               <label for="signupPassword">Password</label>
               <input type="password" id="signupPassword" required>
           </div>
-          <div class="form-group">authOverlay
+          <div class="form-group">
               <label for="confirmPassword">Confirm Password</label>
               <input type="password" id="confirmPassword" required>
           </div>
@@ -126,7 +130,7 @@
               <input type="time" id="eventTime" required>
           </div>
           <div class="form-group">
-              <label for="eventActivities">Activitie</label>
+              <label for="eventActivities">Activity</label>
               <input type="text" id="eventActivities" required>
           </div>
           <div class="form-group">
@@ -206,8 +210,10 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="script.js"></script>
     <script src="event.js" type="module"></script>
+    <script type="module" src="firebase-config.js"></script>
+    <script src="auth.js" type="module"></script>
     <script src="popup.js"></script>
-    <script src="auth.js"></script>
+    
     <script>
       function toggleSidebar() {
         const sidebar = document.querySelector(".events-sidebar");

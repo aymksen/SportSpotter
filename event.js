@@ -1,34 +1,47 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+import app from './firebase-config.js';
 import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
-const firebaseConfig = {
-  databaseURL: "https://eventdata-a2a22-default-rtdb.europe-west1.firebasedatabase.app/"
-};
-
-const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-
-// User ID management
-let userId = localStorage.getItem("userId");
-if (!userId) {
-  userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-  localStorage.setItem("userId", userId);
-}
-
+const auth = getAuth(app);
 const publicEventsRef = ref(database, 'events');
 
-function formatFirebaseDate(dateString, timeString) {
-  const date = new Date(`${dateString}T${timeString}`);
-  const options = { 
-    weekday: 'long', 
-    month: 'long', 
-    day: 'numeric', 
-    hour: 'numeric', 
-    minute: '2-digit', 
-    hour12: true 
-  };
-  return date.toLocaleString('en-US', options).replace(',', ' •');
-}
+document.addEventListener('DOMContentLoaded', () => {
+  // Event Form Submission
+  document.getElementById('addEventForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert('Please login to create events!');
+      return;
+    }
+
+    const eventData = {
+      date: document.getElementById('eventDate').value,
+      time: document.getElementById('eventTime').value,
+      activity: document.getElementById('eventActivities').value,
+      location: document.getElementById('eventLocation').value,
+      eventTag: document.getElementById('eventTag').value.trim(),
+      owner: user.uid
+    };
+
+    push(publicEventsRef, eventData)
+      .then(() => {
+        document.getElementById('addEventForm').reset();
+        hideAddEventForm();
+      })
+      .catch((error) => {
+        console.error('Error adding event:', error);
+        alert('Error adding event. Please try again.');
+      });
+  });
+
+  // Real-time Listener
+  onValue(publicEventsRef, (snapshot) => {
+    renderEvents(snapshot);
+  });
+});
 
 function renderEvents(snapshot) {
   const container = document.getElementById('eventsContainer');
@@ -40,6 +53,8 @@ function renderEvents(snapshot) {
   }
 
   const events = snapshot.val();
+  const currentUser = auth.currentUser?.uid;
+
   Object.entries(events).forEach(([eventId, event]) => {
     const eventCard = document.createElement('div');
     eventCard.className = 'event-card';
@@ -50,8 +65,7 @@ function renderEvents(snapshot) {
       <span class="event-sport ${event.eventTag.toLowerCase()}">${event.eventTag}</span>
     `;
 
-    // Add delete button if current user is the owner
-    if (event.owner === userId) {
+    if (event.owner === currentUser) {
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'delete-event-btn';
       deleteBtn.innerHTML = '×';
@@ -74,45 +88,24 @@ async function deleteEvent(eventId) {
   }
 }
 
-// Real-time listener
-onValue(publicEventsRef, (snapshot) => {
-  renderEvents(snapshot);
-});
-
-// Modified form submission handler
-document.getElementById('addEventForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const eventData = {
-    date: document.getElementById('eventDate').value,
-    time: document.getElementById('eventTime').value,
-    activity: document.getElementById('eventActivities').value,
-    location: document.getElementById('eventLocation').value,
-    eventTag: document.getElementById('eventTag').value.trim(),
-    owner: userId // Add owner information
+// Keep the date formatting and show/hide functions
+function formatFirebaseDate(dateString, timeString) {
+  const date = new Date(`${dateString}T${timeString}`);
+  const options = { 
+    weekday: 'long', 
+    month: 'long', 
+    day: 'numeric', 
+    hour: 'numeric', 
+    minute: '2-digit', 
+    hour12: true 
   };
-
-  if (!Object.values(eventData).every(field => field)) {
-    alert('Please fill in all fields');
-    return;
-  }
-
-  push(publicEventsRef, eventData)
-    .then(() => {
-      document.getElementById('addEventForm').reset();
-      hideAddEventForm();
-    })
-    .catch((error) => {
-      console.error('Error adding event:', error);
-      alert('Error adding event. Please try again.');
-    });
-});
-
-// Keep show/hide functions
-function showAddEventForm() {
-  document.getElementById('addEventOverlay').style.display = 'block';
+  return date.toLocaleString('en-US', options).replace(',', ' •');
 }
 
-function hideAddEventForm() {
+window.showAddEventForm = () => {
+  document.getElementById('addEventOverlay').style.display = 'flex';
+};
+
+window.hideAddEventForm = () => {
   document.getElementById('addEventOverlay').style.display = 'none';
-}
+};

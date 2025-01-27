@@ -1,38 +1,109 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import app from './firebase-config.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAdq5vopBcCndx9ce4arvM-o3cnwi2IGRg",
-  authDomain: "sportspotter-e5d74.firebaseapp.com",
-  projectId: "sportspotter-e5d74",
-  storageBucket: "sportspotter-e5d74.firebasestorage.app",
-  messagingSenderId: "9163968897",
-  appId: "1:9163968897:web:3a5a644eb4153f11395880",
-  measurementId: "G-V7EG7QPTNE"
+const auth = getAuth(app);
+
+// Auth UI Management
+document.addEventListener('DOMContentLoaded', () => {
+  // Login Handler
+  document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const password = document.getElementById('password').value;
+
+    console.log("Auth request payload:", {
+      email: email,
+      password: password.length // Don't log actual password
+    });
+
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      hideAuthPopup();
+    } catch (error) {
+      handleAuthError(error);
+    }
+  });
+
+  // Signup Handler
+  document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      hideAuthPopup();
+    } catch (error) {
+      handleAuthError(error);
+    }
+  });
+
+  // Auth State Listener
+  onAuthStateChanged(auth, (user) => {
+    const authButtons = document.querySelector('.auth-buttons');
+    const userGreeting = document.querySelector('.user-greeting');
+    
+    if (user) {
+      authButtons.style.display = 'none';
+      userGreeting.style.display = 'flex';
+      userGreeting.innerHTML = `Hello, ${user.email}<button onclick="logout()" class="button-3">Logout</button>`;
+    } else {
+      authButtons.style.display = 'flex';
+      userGreeting.style.display = 'none';
+    }
+  });
+});
+
+// Auth UI Functions
+window.showAuthPopup = (type) => {
+  document.getElementById('authOverlay').style.display = 'flex';
+  switchAuth(type);
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+window.hideAuthPopup = () => {
+  document.getElementById('authOverlay').style.display = 'none';
+  document.getElementById('loginForm').reset();
+  document.getElementById('signupForm').reset();
+};
 
+window.switchAuth = (type) => {
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  
+  if (type === 'login') {
+    loginForm.style.display = 'block';
+    signupForm.style.display = 'none';
+  } else {
+    signupForm.style.display = 'block';
+    loginForm.style.display = 'none';
+  }
+};
 
+window.logout = async () => {
+  try {
+    await auth.signOut();
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+};
 
-
-
-const email = document.getElementById('email').value;
-const password = document.getElementById('password').value;
-
-const submit = document.getElementById('submit');
-
-// Handle form submissions
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    console.log('Login with:', email , password);
-    hideAuthPopup();
-});
+function handleAuthError(error) {
+  console.error("Full error details:", error);
+  let message = 'Authentication failed: ';
+  switch(error.code) {
+    case 'auth/email-already-in-use': message += 'Email already in use'; break;
+    case 'auth/invalid-email': message += 'Invalid email'; break;
+    case 'auth/weak-password': message += 'Password too weak (min 6 characters)'; break;
+    case 'auth/user-not-found': message += 'User not found'; break;
+    case 'auth/wrong-password': message += 'Wrong password'; break;
+    default: message += error.message;
+  }
+  alert(message);
+}

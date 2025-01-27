@@ -27,13 +27,13 @@ function switchAuth(mode) {
 }
 
 // Handle form submissions
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    console.log('Login with:', email);
-    hideAuthPopup();
-});
+// document.getElementById('loginForm').addEventListener('submit', (e) => {
+//     e.preventDefault();
+//     const email = document.getElementById('email').value;
+//     const password = document.getElementById('password').value;
+//     console.log('Login with:', email);
+//     hideAuthPopup();
+// });
 
 document.getElementById('signupForm').addEventListener('submit', (e) => {
     e.preventDefault();

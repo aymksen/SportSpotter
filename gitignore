@@ -1,0 +1,4 @@
+# .gitignore
+firebase-config.js
+node_modules/  # (optional: ignore other common files)
+.env           # (optional: ignore environment variables)
