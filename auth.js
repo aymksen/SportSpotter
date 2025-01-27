@@ -62,16 +62,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Auth UI Functions
-window.showAuthPopup = (type) => {
-  document.getElementById('authOverlay').style.display = 'flex';
-  switchAuth(type);
-};
+
+document.getElementById('authOverlay').addEventListener('mousedown', function(e) {
+  // Only trigger if pressing down directly on overlay background
+  if (e.target === this) {
+    hideAuthPopup();
+  }
+});
 
 window.hideAuthPopup = () => {
   document.getElementById('authOverlay').style.display = 'none';
   document.getElementById('loginForm').reset();
   document.getElementById('signupForm').reset();
 };
+
+
+document.getElementById('authOverlay').style.userSelect = 'none';
+
 
 window.switchAuth = (type) => {
   const loginForm = document.getElementById('loginForm');

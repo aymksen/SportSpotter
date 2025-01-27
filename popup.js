@@ -35,21 +35,23 @@ function switchAuth(mode) {
 //     hideAuthPopup();
 // });
 
-document.getElementById('signupForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('signupEmail').value;
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('signupPassword').value;
-    console.log('Signup with:', { email, username, password });
-    hideAuthPopup();
-});
+// document.getElementById('signupForm').addEventListener('submit', (e) => {
+//     e.preventDefault();
+//     const email = document.getElementById('signupEmail').value;
+//     const username = document.getElementById('username').value;
+//     const password = document.getElementById('signupPassword').value;
+//     console.log('Signup with:', { email, username, password });
+//     hideAuthPopup();
+// });
 
 // Close popup when clicking outside
-document.getElementById('authOverlay').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('authOverlay')) {
-        hideAuthPopup();
+document.getElementById('authOverlay').addEventListener('mousedown', function(e) {
+    // Only trigger if pressing down directly on overlay background
+    if (e.target === this) {
+      hideAuthPopup();
     }
-});
+  });
+  
 
 
 
