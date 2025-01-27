@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 
 const firebaseConfig = {
   databaseURL: "https://eventdata-a2a22-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -15,7 +15,7 @@ if (!userId) {
   localStorage.setItem("userId", userId);
 }
 
-const userEventsRef = ref(database, `events/${userId}`);
+const publicEventsRef = ref(database, 'events');
 
 function formatFirebaseDate(dateString, timeString) {
   const date = new Date(`${dateString}T${timeString}`);
@@ -40,7 +40,7 @@ function renderEvents(snapshot) {
   }
 
   const events = snapshot.val();
-  Object.entries(events).forEach(([key, event]) => {
+  Object.entries(events).forEach(([eventId, event]) => {
     const eventCard = document.createElement('div');
     eventCard.className = 'event-card';
     eventCard.innerHTML = `
@@ -49,16 +49,37 @@ function renderEvents(snapshot) {
       <div class="event-location">${event.location}</div>
       <span class="event-sport ${event.eventTag.toLowerCase()}">${event.eventTag}</span>
     `;
+
+    // Add delete button if current user is the owner
+    if (event.owner === userId) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-event-btn';
+      deleteBtn.innerHTML = '×';
+      deleteBtn.onclick = () => deleteEvent(eventId);
+      eventCard.appendChild(deleteBtn);
+    }
+
     container.appendChild(eventCard);
   });
 }
 
+async function deleteEvent(eventId) {
+  if (confirm('Are you sure you want to delete this event?')) {
+    try {
+      await remove(ref(database, `events/${eventId}`));
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      alert('Error deleting event. Please try again.');
+    }
+  }
+}
+
 // Real-time listener
-onValue(userEventsRef, (snapshot) => {
+onValue(publicEventsRef, (snapshot) => {
   renderEvents(snapshot);
 });
 
-// Form submission handler (keep your existing form ID)
+// Modified form submission handler
 document.getElementById('addEventForm').addEventListener('submit', (e) => {
   e.preventDefault();
 
@@ -67,15 +88,16 @@ document.getElementById('addEventForm').addEventListener('submit', (e) => {
     time: document.getElementById('eventTime').value,
     activity: document.getElementById('eventActivities').value,
     location: document.getElementById('eventLocation').value,
-    eventTag: document.getElementById('eventTag').value
+    eventTag: document.getElementById('eventTag').value.trim(),
+    owner: userId // Add owner information
   };
 
-  if (!Object.values(eventData).every(field => field.trim())) {
+  if (!Object.values(eventData).every(field => field)) {
     alert('Please fill in all fields');
     return;
   }
 
-  push(userEventsRef, eventData)
+  push(publicEventsRef, eventData)
     .then(() => {
       document.getElementById('addEventForm').reset();
       hideAddEventForm();
@@ -86,7 +108,7 @@ document.getElementById('addEventForm').addEventListener('submit', (e) => {
     });
 });
 
-// Keep your existing show/hide functions
+// Keep show/hide functions
 function showAddEventForm() {
   document.getElementById('addEventOverlay').style.display = 'block';
 }
